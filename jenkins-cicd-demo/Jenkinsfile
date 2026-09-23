@@ -38,7 +38,7 @@ pipeline {
                 sh '''
                     docker stop jenkins-cicd-demo || true
                     docker rm jenkins-cicd-demo || true
-                    docker run -d --name jenkins-cicd-demo -p 8080:80 jenkins-cicd-demo
+                    docker run -d --name jenkins-cicd-demo -p 8081:80 jenkins-cicd-demo
                 '''
             }
         }
