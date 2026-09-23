@@ -11,19 +11,25 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'npm install'
+                dir('jenkins-cicd-demo') {
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                dir('jenkins-cicd-demo') {
+                    sh 'npm test'
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t jenkins-cicd-demo:latest .'
+                dir('jenkins-cicd-demo') {
+                    sh 'docker build -t jenkins-cicd-demo .'
+                }
             }
         }
 
@@ -32,9 +38,23 @@ pipeline {
                 sh '''
                     docker stop jenkins-cicd-demo || true
                     docker rm jenkins-cicd-demo || true
-                    docker run -d --name jenkins-cicd-demo -p 8080:8080 jenkins-cicd-demo:latest
+                    docker run -d --name jenkins-cicd-demo -p 8080:80 jenkins-cicd-demo
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'CI/CD Pipeline failed. Please check the console output.'
+        }
+
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
