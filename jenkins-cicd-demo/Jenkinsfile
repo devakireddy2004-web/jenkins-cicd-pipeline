@@ -43,7 +43,7 @@ pipeline {
             }
         }
     }
-# post sectionn
+// post section
     post {
         success {
             echo 'CI/CD Pipeline completed successfully!'
