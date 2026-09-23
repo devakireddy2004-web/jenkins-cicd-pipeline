@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t jenkins-cicd-demo:latest .'
+            }
+        }
+
+        stage('Docker Run/Deploy') {
+            steps {
+                sh '''
+                    docker stop jenkins-cicd-demo || true
+                    docker rm jenkins-cicd-demo || true
+                    docker run -d --name jenkins-cicd-demo -p 8080:8080 jenkins-cicd-demo:latest
+                '''
+            }
+        }
+    }
+}
